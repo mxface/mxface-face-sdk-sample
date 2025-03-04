@@ -1,0 +1,98 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "MxFace.SDK.Face.Grpc";
+
+package mxface.face;
+
+// Upload Face Section
+
+message UploadFaceRequest {
+    int32 MinimumDistanceBetweenEyeThreshold = 1;
+    string Encoded_image = 2;
+    bool Attributes = 3;
+    bool GetCroppedFace = 4;
+    string Algorithm = 5;
+}
+
+message UploadFaceResponse {
+    int32 ErrorCode = 1;
+    string ErrorMessage = 2;
+    int32 Code = 3;
+    string Error = 4;
+    repeated Analytics Faces = 5;
+}
+
+message Analytics {
+    FaceAnalytics FaceAnalytics = 1;
+    float Quality = 2;
+    repeated Points Points = 3;
+    FaceRectangle FaceRectangle = 4;
+    string CroppedFace = 5;
+}
+
+message FaceAnalytics {
+    string Age = 1;
+    string Gender = 2;
+    string Emotion = 3;
+    float Confidence = 4;
+}
+
+message FaceRectangle {
+    int32 x = 1;
+    int32 y = 2;
+    int32 height = 3;
+    int32 width = 4;
+}
+
+message Points {
+    float X = 1;
+    float Y = 2;
+}
+
+// Enrollment Section
+
+message EnrollmentRequest {
+    string ImageData = 1;
+    string ExternalId = 2;
+    string Group = 3;
+}
+
+message EnrollmentResponse {
+    int32 Code = 1;
+    string Message = 2;
+}
+
+// Search Section
+
+message SearchRequest {
+    string FaceData = 1;
+    string Group = 2;
+}
+
+message SearchResponse {
+    string ExternalId = 1;
+    int32 MatchingScore = 2;
+    string ErrorMessage = 3;
+}
+
+// Match Section
+
+message MatchRequest {
+    string FaceData1 = 1;
+    string FaceData2 = 2;
+}
+
+message MatchResponse {
+    int32 ErrorCode = 1;
+    string ErrorMessage = 2;
+    int32 Code = 3;
+    string Error = 4;
+    float Score = 5;
+}
+
+service FaceService {
+    rpc UploadFace(UploadFaceRequest) returns (UploadFaceResponse);
+    rpc EnrollFace(EnrollmentRequest) returns (EnrollmentResponse);
+    rpc SearchFace(SearchRequest) returns (SearchResponse);
+    rpc VerifyFace(MatchRequest) returns (MatchResponse);
+}

@@ -1,0 +1,273 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject FaceService.FaceServiceClient faceService
+
+<PageTitle>MxFace Face Sample</PageTitle>
+
+<div class="custom_card">
+    <p class="heading_title">Upload Face</p>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="custom_card mb-0 h-100">
+                <InputFile OnChange="OnFileChange" accept="image/png, image/jpeg, image/jpg, image/bmp" class="form-control mb-2" />
+
+                @if (!string.IsNullOrEmpty(image1))
+                {
+                    <div class="mt-3 d-flex justify-content-center">
+                        <img src="data:image/png;base64,@image1" class="img-fluid rounded shadow" height="220" width="220" />
+                    </div>
+                }
+                <div class="mt-3 w-100">
+                    <button id="btnEnroll" class="btn btn_primary w-100" @onclick="UploadImage">Upload</button>
+                </div>
+
+                @if (!string.IsNullOrEmpty(image1) && uploadFaceResponse is not null)
+                {
+                    <div class="col-12 mt-3">
+                        <div class="">
+                            <label for="txtImageData" class="form-label fw-bold text-secondary">Image Data:</label>
+                            <textarea id="txtImageData" class="form-control" rows="3" disabled>@image1</textarea>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-6">
+            @if (uploadFaceResponse is not null)
+            {
+                <div class="custom_card details_box w-100 mb-0">
+                    <div class="detail_item_box"><strong>Quality:</strong> @uploadFaceResponse.Faces.FirstOrDefault().Quality</div>
+                    <div class="detail_item_box"><strong>Age:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Age</div>
+                    <div class="detail_item_box"><strong>Gender:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Gender</div>
+                    <div class="detail_item_box"><strong>Emotion:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Emotion</div>
+                    <div class="detail_item_box"><strong>Confidence:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Confidence</div>
+                    <div class="detail_item_box"><strong>Face Rectangle:x:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceRectangle.X</div>
+                    <div class="detail_item_box"><strong>Face Rectangle:y:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceRectangle.Y</div>
+                    <div class="detail_item_box"><strong>Face Rectangle:width:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceRectangle.Width</div>
+                    <div class="detail_item_box"><strong>Face Rectangle:height:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceRectangle.Height</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="custom_card">
+    <div class="row">
+        <!-- Enroll Section Start -->
+        <div class="col-md-6 col-12">
+            <p class="heading_title">Enroll</p>
+            <div class="custom_card m-h-220px mb-0">
+
+                <div class="row g-3 align-items-end">
+                    <div class="col-6">
+                        <label for="txtGroup" class="form-label fw-bold text-secondary">Group:</label>
+                        <input type="text" id="txtGroup" @bind="enrollmentRequest.Group" placeholder="Enter group name" class="form-control" required />
+                    </div>
+
+                    <div class="col-6">
+                        <label for="enrollRequest.ExternalId" class="form-label fw-bold text-secondary">Code:</label>
+                        <input type="text" @bind="enrollmentRequest.ExternalId" id="enrollRequest.ExternalId" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row g-3 align-items-center mt-3">
+
+
+                    @if (enrollmentResponse is not null)
+                    {
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="w-50">
+                                <label for="enrollResponse.Code" class="form-label fw-bold text-secondary">Response Code:</label>
+                                <p id="enrollResponse.Code" class="detail_item_box p-3 text-success">@enrollmentResponse.Code</p>
+
+                            </div>
+                            <div class="w-50 ms-3">
+                                <label for="enrollResponse.Message" class="form-label fw-bold text-secondary">Message:</label>
+                                <p id="enrollResponse.Message" class="detail_item_box p-3 text-success">@enrollmentResponse.Message</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="mt-3 w-100">
+                    <button id="btnEnroll" class="btn btn_primary w-100" @onclick="EnrollFaceAsync">Enroll</button>
+                </div>
+            </div>
+        </div>
+        <!-- Enroll Section End -->
+        <!-- Search Section Start -->
+        <div class="col-md-6 col-12">
+            <p class="heading_title">Search</p>
+            <div class="custom_card m-h-220px mb-0">
+                <div class="col-md-12 mt-2">
+                    <button id="btnMatch" class="btn btn_primary w-100" @onclick="SearchFaceAsync">Search</button>
+                </div>
+                @if (searchResponse is not null)
+                {
+                    @if (searchResponse?.MatchingScore > 0)
+                    {
+                        <div class="row g-3 align-items-center mt-4">
+                            <div class="col-md-6">
+                                <label for="txtImageInfo" class="form-label fw-bold text-secondary">Matching Score:</label>
+                                <input type="text" value="@searchResponse.MatchingScore" id="txtImageInfo" class="form-control" disabled />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="txtIsoTemplate" class="form-label fw-bold text-secondary">Image Data:</label>
+                                <textarea id="txtIsoTemplate" class="form-control" rows="2" disabled>@image1</textarea>
+                            </div>
+
+
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No match results found!</p>
+                    }
+                }
+            </div>
+        </div>
+        <!-- Search Section End -->
+    </div>
+</div>
+
+<div class="custom_card">
+    <p class="heading_title">Match</p>
+    <div class="row g-3 align-items-center">
+
+        <div class="col-md-6">
+            <div class="d-flex justify-content-between">
+                <div class="custom_card w-100 mb-0 text-center">
+                    <p class="text_primary">Image 1</p>
+                    @if (!string.IsNullOrEmpty(image1))
+                    {
+                        <div class="mt-3">
+                            <img src="data:image/png;base64,@image1" class="img-fluid rounded shadow" style="max-width: 100%; height: auto;" />
+                        </div>
+                    }
+                </div>
+                <div class="custom_card w-100 mb-0 text-center ms-3">
+
+
+                    <p class="text_primary">Image 2</p>
+
+                    @if (!string.IsNullOrEmpty(image2))
+                    {
+                        <div class="mt-3">
+                            <img src="data:image/png;base64,@image2" class="img-fluid rounded shadow" style="max-width: 100%; height: auto;" />
+                        </div>
+                    }
+                    <br />
+                    <InputFile OnChange="OnFileChange2" accept="image/png, image/jpeg, image/jpg, image/bmp" class="form-control mb-2" />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <button id="btnEnroll" class="btn btn_primary w-100" @onclick="VerifyFaceAsync">MatchFace</button>
+        </div>
+        <div class="col-md-4">
+            <div class="custom_card mb-0 p-3">
+                <small class="d-block mt-2 fw-bold text-danger text-center">
+                    If the matching score is <b>less than 15</b>, the images <b>do not match</b>.
+                    <b>Otherwise</b>, the images are considered a <b class="text-success">MATCH</b>.
+                </small>
+                <hr />
+                @if (matchResponse is not null)
+                {
+                    <label for="txtStatus" class="form-label fw-bold text-secondary">Matching Score:</label>
+                    <input type="text" value="@matchResponse.Score" id="txtStatus" class="form-control text-center fw-bold" disabled />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    UploadFaceRequest? uploadFaceRequest;
+    UploadFaceResponse? uploadFaceResponse;
+    EnrollmentRequest? enrollmentRequest = new();
+    SearchRequest? searchRequest = new();
+    EnrollmentResponse? enrollmentResponse;
+    SearchResponse? searchResponse;
+    MatchResponse? matchResponse;
+    private string image1 { get; set; } = string.Empty;
+    private string image2 { get; set; } = string.Empty;
+
+    private async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        image1 = string.Empty;
+        uploadFaceResponse = null;
+
+        var file = e.File;
+        if (file != null)
+        {
+
+            enrollmentResponse = null;
+            searchResponse = null;
+            matchResponse = null;
+            enrollmentRequest.Group = string.Empty;
+            enrollmentRequest.ExternalId = Guid.NewGuid().ToString();
+
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            image1 = Convert.ToBase64String(memoryStream.ToArray());
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnFileChange2(InputFileChangeEventArgs e)
+    {
+        image2 = string.Empty;
+
+        var file = e.File;
+        if (file != null)
+        {
+            matchResponse = null;
+
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            image2 = Convert.ToBase64String(memoryStream.ToArray());
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task UploadImage()
+    {
+        var request = new UploadFaceRequest
+            {
+                MinimumDistanceBetweenEyeThreshold = 2,
+                EncodedImage = image1,
+                Attributes = true
+            };
+        uploadFaceResponse = await faceService.UploadFaceAsync(request);
+    }
+
+    private async Task EnrollFaceAsync()
+    {
+        enrollmentRequest.ImageData = image1;
+        enrollmentResponse = await faceService.EnrollFaceAsync(enrollmentRequest);
+    }
+
+    private async Task SearchFaceAsync()
+    {
+        var request = new SearchRequest
+            {
+                FaceData = image1,
+                Group = enrollmentRequest.Group
+            };
+        searchResponse = await faceService.SearchFaceAsync(request);
+    }
+
+    private async Task VerifyFaceAsync()
+    {
+        var request = new MatchRequest
+            {
+                FaceData1 = image1,
+                FaceData2 = image2
+            };
+        matchResponse = await faceService.VerifyFaceAsync(request);
+    }
+}

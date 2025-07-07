@@ -3,6 +3,7 @@
 public class UploadFaceResponse : BaseResponse
 {
     public List<Analytics> Faces { get; set; }
+    public float LivenessScore { get; set; }
 }
 
 public class Analytics : FaceDetect

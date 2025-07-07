@@ -22,4 +22,10 @@
     </Protobuf>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MxFace.SDK.Face">
+      <HintPath>bin\Debug\net8.0\MxFace.SDK.Face.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

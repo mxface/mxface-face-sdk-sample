@@ -37,6 +37,7 @@
             {
                 <div class="custom_card details_box w-100 mb-0">
                     <div class="detail_item_box"><strong>Quality:</strong> @uploadFaceResponse.Faces.FirstOrDefault().Quality</div>
+                    <div class="detail_item_box"><strong>Liveness:</strong> @uploadFaceResponse.LivenessScore</div>
                     <div class="detail_item_box"><strong>Age:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Age</div>
                     <div class="detail_item_box"><strong>Gender:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Gender</div>
                     <div class="detail_item_box"><strong>Emotion:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Emotion</div>

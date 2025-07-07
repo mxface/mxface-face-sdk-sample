@@ -20,6 +20,7 @@ message UploadFaceResponse {
     int32 Code = 3;
     string Error = 4;
     repeated Analytics Faces = 5;
+    float LivenessScore = 6;
 }
 
 message Analytics {

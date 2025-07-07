@@ -38,6 +38,7 @@
             {
                 <div class="custom_card details_box w-100 mb-0">
                     <div class="detail_item_box"><strong>Quality:</strong> @uploadFaceResponse.Faces.FirstOrDefault().Quality</div>
+                    <div class="detail_item_box"><strong>Liveness:</strong> @uploadFaceResponse.LivenessScore</div>
                     <div class="detail_item_box"><strong>Age:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Age</div>
                     <div class="detail_item_box"><strong>Gender:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Gender</div>
                     <div class="detail_item_box"><strong>Emotion:</strong> @uploadFaceResponse.Faces.FirstOrDefault().FaceAnalytics.Emotion</div>
@@ -108,15 +109,18 @@
                     {
                         <div class="row g-3 align-items-center mt-4">
                             <div class="col-md-6">
-                                <label for="txtImageInfo" class="form-label fw-bold text-secondary">Matching Score:</label>
-                                <input type="text" value="@searchResponse.FirstOrDefault().MatchingScore" id="txtImageInfo" class="form-control" disabled />
+                                <label for="txtImageInfo" class="form-label fw-bold text-secondary">External Id:</label>
+                                <input type="text" value="@searchResponse.FirstOrDefault().ExternalId" id="txtImageInfo" class="form-control" disabled />
                             </div>
 
                             <div class="col-md-6">
                                 <label for="txtIsoTemplate" class="form-label fw-bold text-secondary">Image Data:</label>
                                 <textarea id="txtIsoTemplate" class="form-control" rows="2" disabled>@image1</textarea>
                             </div>
-
+                            <div class="col-md-6">
+                                <label for="txtImageInfo" class="form-label fw-bold text-secondary">Matching Score:</label>
+                                <input type="text" value="@searchResponse.FirstOrDefault().MatchingScore" id="txtImageInfo" class="form-control" disabled />
+                            </div>
 
                         </div>
                     }
@@ -170,7 +174,7 @@
         <div class="col-md-4">
             <div class="custom_card mb-0 p-3">
                 <small class="d-block mt-2 fw-bold text-danger text-center">
-                    If the matching score is <b>less than 15</b>, the images <b>do not match</b>.
+                    If the matching score is <b>less than 30</b>, the images <b>do not match</b>.
                     <b>Otherwise</b>, the images are considered a <b class="text-success">MATCH</b>.
                 </small>
                 <hr />

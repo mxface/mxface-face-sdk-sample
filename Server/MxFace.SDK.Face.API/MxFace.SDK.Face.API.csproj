@@ -14,4 +14,10 @@
     <ProjectReference Include="..\..\Shared\MxFace.SDK.Face.API.Shared\MxFace.SDK.Face.API.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MxFace.SDK.Face">
+      <HintPath>bin\Debug\net8.0\MxFace.SDK.Face.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
